@@ -1,0 +1,258 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{graphicx}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+\newcommand{\shap}{\emph{SHAP values}\xspace}
+
+\title{Interpreting Predictions of Tree Ensembles via SHAP Values}
+\subtitle{Applications and Principle}
+\date{\today}
+\author{Pei Liu}  
+\institute{Department of Computer Science @UESTC}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}[fragile]{What is SHAP values?}
+
+  \textbf{SHAP}(\textbf{SH}apley \textbf{A}dditive ex\textbf{P}lanation) is a unified approach to explain the output of any machine learning model.
+
+  The properties of \shap are as follows:
+  \begin{itemize}
+    \item fully individualized
+    \item only possible consistent
+    \item locally accurate
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{What can SHAP values bring to us?}
+  
+  As the linear model does, the \shap also can show features each contributing to push the model output from the base value (the average model output) to the model output.
+
+  \begin{equation*}
+    \hat{Y} = Prob(The\ fruit\ is\ an\ apple) = 0.4 \cdot Color + \cdots + 0.2 \cdot Shape + 0.1 \cdot Size
+  \end{equation*}
+
+\end{frame}
+
+\section{Gallery}
+
+\begin{frame}[fragile]{Gallery of SHAP values}
+  The individualized \shap :
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{fig/gallery_p1.png}
+    \caption{Instance model prediction of Titanic Data}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Gallery of SHAP values}
+  To summarize the effects of all the features via \shap :
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\linewidth]{fig/gallery_p2.png}
+    \caption{Summary SHAP Plot of West China Hospital Breast Cancer Prognostic Model}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Gallery of SHAP values}
+  To summarize the effects of all the features via \shap :
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\linewidth]{fig/gallery_p3.png}
+    \caption{Summary SHAP Plot of LOL Win Prediction}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Let us dive into SHAP values}
+  \begin{center}What are the \emph{principles} behind \shap ?\end{center}
+\end{frame}
+
+\section{Background}
+
+\begin{frame}{Problem Description}
+  Given that 
+  \begin{itemize}
+    \item a set of players: $N=\{x_1, x_2, \cdots, x_n\}$
+    \item value function: $v(S)$ for any $S\subseteq N$
+  \end{itemize}
+  then what is the payoff for each player $i$, i.e. $\psi_i(N, v)=?$
+	
+\end{frame}
+
+\begin{frame}{Constraints}
+  \textbf{Accuracy}: all values are assigned out for each player.
+
+  $$\sum_{i\in N} \psi_{i}(N, v) = v(N)$$
+
+\end{frame}
+
+\begin{frame}{Constraints}
+  \textbf{Symmetry}: the contribution of play $i$ and $j$ is same if they are \emph{interchangeable}.
+  
+  $$\psi_{i}(N, v) = \psi_{j}(N, v)$$ if $$v(S\cup \{i\})=v(S\cup \{j\})$$ for any $$S\subseteq N\setminus \{i,j\}$$
+    
+  Interchangebale agents should receive the same shares/payments.
+\end{frame}
+
+\begin{frame}{Constraints}
+  \textbf{Dummy player}: $i$ is a dummy player if the amount that $i$ contributes to any coalition is 0.
+
+  $$\psi_{i}(N, v) = 0$$ if $$v(S\cup \{i\})=v(S)$$ for all $S$.
+
+  Dummy players should receive nothing.
+\end{frame}
+
+\begin{frame}{Constraints}
+  \textbf{Additivity}: if we can separate game into two parts $v=v_1 + v_2$, then we should be able to decompose the payments.
+
+  For any two $v_1$ and $v_2$, $$\psi_{i}(N, v_1+v_2)=\psi_{i}(N, v_1)+\psi_{i}(N, v_2)$$ for each $i$, where the game is defined by $$(v_1+v_2)(S)=v_1(S)+v_2(S)$$ for every coalition $S$.
+  
+\end{frame}
+
+\begin{frame}{Shapley Value in Game Theory}
+
+  \textbf{Shapley Value} gives the \alert{unique solution} under those constraints.\\ \hspace*{\fill} \\
+
+  \begin{quote}
+    Given a coalitional game $(N, v)$, the \textit{Shapley Value} divides payoffs among players according to:
+    \begin{equation*}
+       \psi_{i}(N, v) = \frac{1}{N !}\sum_{S\subseteq N\setminus \{i\}} |S|!(|N|-|S|-1) !\bigl[v(S\cup \{i\})-v(S)\bigr]
+    \end{equation*}
+    for each player $i$.
+  \end{quote}
+
+  How to understand it?
+\end{frame}
+
+\section{Principles}
+
+\begin{frame}{principles}
+  Next, questions come to us:
+  \begin{itemize}
+    \item how would \textbf{Shapley value} help us to interprete model's output?
+    \item how does \shap exploit \textbf{Shapley value} in game theory?
+  \end{itemize}
+
+  The questions above had been solved by the paper titled ``A Unified Approach to Interpreting Model Predictions'' from \textbf{NIPS 2017}.
+\end{frame}
+
+\begin{frame}{principles}
+  Since the original model $f(x)$ is so complex that it's hard to be interpreted, we must use a simpler \emph{explanation model} $g(x^{'})$, which we define as any interpretable approximation of the original model.
+
+  \textbf{Definition 1.} input space mapping function $h_x$ that mapps the \textit{simplified inputs} $x^{'}$ to the original inputs $x$, i.e., $$x=h_x(x^{'})$$
+
+  Some examples of mapping function $h_x$?
+
+\end{frame}
+
+\begin{frame}{principles}
+
+  \textbf{Definition 2.} an explaination/approximation model $g$ that is a linear function of binary varibales. $$g(x^{'}) = \phi_0 + \sum_{i=1}^{M} \phi_i x_{i}^{'}$$ where $x^{'} \in \{0, 1\}^M$, M is the number of simplified input features, and $x=h_x(x^{'})$ (as defined by \textbf{Definition 1} before).
+
+  Now, assuming that the mapping function $h_x$ and explaination model $g$ is known for us, i.e. $\phi_i$ is given.
+
+  Perfectly! We can use $g$ to interprete the original model output!
+
+\end{frame}
+
+\begin{frame}{principles}
+
+  \textbf{Definition 2.} an explaination/approximation model $g$.
+  $$g(x^{'}) = \phi_0 + \sum_{i=1}^{M} \phi_i x_{i}^{'}$$
+
+  But with the known explaination model $g$, we can infer its properties naturally:
+  \begin{itemize}
+    \item local accuracy
+    \item missingness
+    \item additivity
+    \item interchangeable?
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{principles}
+
+  \textbf{Definition 2.} an explaination/approximation model $g$.
+  $$g(x^{'}) = \phi_0 + \sum_{i=1}^{M} \phi_i x_{i}^{'}$$
+
+  As a result, based on the game theory, we can know that \textbf{Shapley Value} is the \alert{only possible solution} of the explaination model $g$.
+
+  $$\phi_i(f, x)=\frac{1}{M !}\sum_{z^{'}\subseteq x^{'}} |z^{'}|!(|M|-|z^{'}|-1) !\bigl[f_x(z^{'})-f_x(z^{'}\setminus i)\bigr]$$
+
+  How to calculate $f_x(z^{'})$? Or how to calculate contributions of the observed feature set $z^{'}$ w.r.t model's output?
+
+\end{frame}
+
+\begin{frame}{principles}
+  Using a conditional expectation function of the original model:
+  $$f_x(z^{'}) = f(h_x(z^{'})) = f(z_S) \approx E[f(z)|z_S]$$
+  where $S$ is the set of non-zero indexes in $z^{'}$.
+
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\linewidth]{fig/principles_p1.png}
+    \caption{SHAP values calculations}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{principles}
+  In tree ensemble model, estimating \shap directly in $O(TL2^M)$ time.
+
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.65\linewidth]{fig/principles_p2.png}
+    \caption{Algorithm of estimating the conditional expectations}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{principles}
+  More details we can find and discuss in paper:
+  \begin{itemize}
+    \item Kernel SHAP versus LIME
+    \item Deep SHAP versus DeepLift
+    \item Estimating \shap in $O(TLD^2)$ time (D, depth of tree)
+    \item SHAP interaction values
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[standout]
+  Questions?
+\end{frame}
+
+\section{References}
+
+\begin{frame}{References}
+  References:
+  \begin{itemize}
+    \item Original paper: \url{http://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions}
+    \item Tree explanation: \url{https://arxiv.org/abs/1802.03888}
+    \item \textsc{shap} library: \url{https://github.com/slundberg/shap}
+    \item \textsc{Beamer} template for presentation: \url{https://github.com/matze/mtheme}
+  \end{itemize}
+\end{frame}
+
+\end{document}
