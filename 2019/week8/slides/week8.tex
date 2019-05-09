@@ -1,0 +1,262 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{graphicx}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+\title{Machine Learning Explainability}
+\subtitle{Some applications in medical settings}
+\date{\today}
+\author{Pei Liu}
+\institute{Department of Computer Science @UESTC}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}[fragile]{What is it}
+  
+  Models you built can explain how the event of interest is affected.
+  \begin{itemize}
+    \item \textsc{VIP} (What variables most affect it?)
+    \item \textsc{PDP} (How do the variables affect it?)
+    \item \textsc{Case studies} (For an individual?)
+  \end{itemize}
+
+  If I were in \emph{a linear world}, then how does it become?
+  \begin{equation*}
+    \hat Y = Prob(The\ fruit\ is\ an\ apple) = 0.4 \cdot Color + \cdots + 0.2 \cdot Shape + 0.1 \cdot Size
+  \end{equation*}
+
+\end{frame}
+\begin{frame}[fragile]{Why should we do it}
+  But actually, we are building a complex model via Machine Learning methods.
+
+  In the realm of supervised learning, there are 
+  \begin{itemize}
+    \item Decision Tree
+    \item Neural Network
+    \item And others
+  \end{itemize}
+
+  Especially in the medical settings, it is crucial to understand how the factors affect the survival of patients.
+
+  Let us focus on the prognostic predictive model that is derived from \textbf{West China Hospital}!
+
+  \alert{Just Explore it!}
+\end{frame}
+
+\begin{frame}[fragile]{Details of the model}
+  More details in the \textsc{idfs} model:
+  \begin{itemize}
+    \item X variables: Age, Education, ..., Tumor Size. (No. 19)
+    \item Y varibales: Follow-up time and status of relapse. (No. 2)
+    \item Predictions: Hazard Ratio (a real number indicating risk of relapse).
+    \item Algorithm: Cox Proportional Hazard model based on XGBoost.
+  \end{itemize}
+
+  Since it is indeed a \texttt{Black Box}, how can we interpret it just like a linear model?
+
+\end{frame}
+
+\section{Variable Importance}
+
+\begin{frame}{What varibles most affect the relapse?}
+  Recommended methods are as follows:
+  \begin{itemize}
+    \item Built-in functions
+    \item Permutation Importance
+    \item Other tricks?
+  \end{itemize}
+	
+	\begin{figure}[htbp]
+
+    \centering
+    \includegraphics[width=0.55\linewidth]{fig/pic1.png}
+    \caption{Variable Importance of the \textsc{IDFS} Model}
+
+  \end{figure}
+\end{frame}
+
+\section{How do the variables affect the relapse?}
+
+\begin{frame}[fragile]{Partial Dependency Plots}
+  The method we discuss here is \textbf{Partial Dependency Plots}.
+
+  \begin{quote}
+    This method takes a row of the dataset and repeatedly changes a value for one feature.
+
+    It is done multiple times with different rows and then aggregated in order to find out how the feature is influencing the target on a wide range.
+  \end{quote}
+  
+  In order to investigate the effect of a feature, now we exploit it to our \textsc{idfs} model!
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/A1_age_diag.png}
+    \caption{The Actual Prediction Distribution}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/A2_age_diag.png}
+    \caption{PDP.}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/B1_medical_insurance_en.png}
+    \caption{The Actual Prediction Distribution}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/B2_medical_insurance_en.png}
+    \caption{PDP.}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/C1_molecular_new.png}
+    \caption{The Actual Prediction Distribution}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/C2_molecular_new.png}
+    \caption{PDP.}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/D1_n.png}
+    \caption{The Actual Prediction Distribution}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/D2_n.png}
+    \caption{PDP.}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/E1_t.png}
+    \caption{The Actual Prediction Distribution}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/E2_t.png}
+    \caption{PDP.}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/F1_who.png}
+    \caption{The Actual Prediction Distribution}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Partial Dependency Plots for A Feature}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/F2_who.png}
+    \caption{PDP.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Disadvantages of Partial Dependency Plots}
+  \begin{itemize}
+    \item \textbf{\texttt{Maximum number of features}}: up to 2 features.
+    \item \textbf{\texttt{Feature distribution}}: you might overinterpret regions with almost no data.
+    \item \textbf{\texttt{Assumption of independence}}: feature correlations (ridiculous combination of height and weights).
+    \item \textbf{\texttt{Heterogeneous effects might be hidden}}: PD plots only show the average marginal effects.
+  \end{itemize}
+\end{frame}
+
+\section{Case Studies}
+
+\begin{frame}{How did the variables affect the relapse of a specific patient?}
+  The \textsc{SHAP} values are used to show the effects of the features of a single patient.
+
+  Here, the method also takes one feature and compares the value to a baseline value for that feature without changing the other features. That is done for all features.
+
+  \alert{Need more thinking for the principle!}
+\end{frame}
+
+\begin{frame}{How did the variables affect the relapse of a specific patient?}
+  An example for showing parameters of a specific patient influencing the risk of hazard ratio.
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{fig/case_studies.png}
+    \caption{Case Studies}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[standout]
+  Questions?
+\end{frame}
+
+\begin{frame}{References}
+  References:
+  \begin{itemize}
+    \item \texttt{Good Books}: \url{https://christophm.github.io/interpretable-ml-book/agnostic.html} 
+    \item Inspired by the tutorial: \url{https://pan.baidu.com/s/1hF6tVG3JvzML00R4ozZkYQ}
+    \item Permutation importance: \url{https://doi.org/10.1093/bioinformatics/btq134}
+    \item \textsc{pdpbox} library: \url{https://github.com/SauceCat/PDPbox}
+    \item \textsc{Beamer} template for presentation: \url{https://github.com/matze/mtheme}
+  \end{itemize}
+\end{frame}
+
+\end{document}
