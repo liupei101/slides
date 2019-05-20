@@ -1,0 +1,226 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+\title{An Introduction to Reinforcement Learning}
+\subtitle{Fundamental and formalism}
+\date{\today}
+\author{Pei Liu}
+\institute{Department of Computer Science @UESTC}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Background}
+
+\begin{frame}[fragile]{Background - challenges}
+  
+  In supervised learning, the agent does:
+  \begin{itemize}
+    \item learning from the labeled training set
+    \item making their outputs mimic the labels y given in the training set.
+  \end{itemize}
+
+  But it is indeed stuck in some scenarios, like \emph{decision making} and \emph{control problems}.  Luckily, \alert{Reinforcement Learning (RL)} came to the stage and solved them! In essence, it can be briefly summarized as:
+  \begin{itemize}
+    \item \textbf{experience-driven} autonomous learning
+    \item improving over time through \textbf{trial and error}
+  \end{itemize}
+ 
+\end{frame}
+
+\begin{frame}[fragile]{Background - gallery}
+  RL scenarios A: \textit{Flappy Bird}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.35\linewidth]{fig/RL-flippy-bird.png}
+    \caption{RL based Flippy Bird}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Background - gallery}
+  RL scenarios B: \textit{Inverted Pendulum}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.65\linewidth]{fig/RL-inverted-pendulum.png}
+    \caption{RL based balanced inverted pendulum}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Background - question}
+  In recent years, we have witnessed more examples like: AlphaGo, Self-driving, Robot, Control system.
+
+  Compared with previous generation RL, RL represented as above is more powerful in:
+  \begin{itemize}
+    \item directly recognizing \emph{image} or \emph{text} as the input
+    \item more adaptive in the real world
+  \end{itemize}
+
+  It's called \alert{Deep Reinforcement Learning} (DRL). DRL agents could be trained on raw, high-dimensional observations, solely based on a reward signal.
+\end{frame}
+
+\begin{frame}[fragile]{Background - question}
+  Here our study of reinforcement learning will begin with a definition of
+the \alert{Markov decision processes} (MDP), which provides the formalism in
+which RL problems are usually posed.
+\end{frame}
+
+\section{Formalism}
+
+\begin{frame}{Formalism - definition}
+  A alert{Markov decision processes} (MDP) is a tuple $(S, A, \{P_{sa}\}, \gamma, R)$, where:
+  \begin{itemize}
+    \item $S, A$ are set of \textbf{states} and \textbf{actions}, respectively
+    \item $P_{sa}$ are the state transition probabilities
+    \item $\gamma\in [0, 1)$ is called the \textbf{discount factor}
+    \item $R : S \times A \mapsto \mathbb{R}$ is the \textbf{reward function}. (or $R : S \mapsto \mathbb{R}$)
+  \end{itemize}
+
+	\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/RL-action-learning.png}
+    \caption{The perception-action-learning loop}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Formalism - procedure}
+  At time $t$, the procedure in the loop of perception-action-learning would be as follows:
+  \begin{itemize}
+    \item the agent receives state $S_t$ from the environment
+    \item the agent uses its policy $\pi$ to choose an action $A_t$
+    \item once the action is executed, the environment transitions a step
+    \item the environment provides the next state $S_{t+1}$ and reward $R_{t+1}$
+  \end{itemize}
+
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/RL-action-learning.png}
+    \caption{The perception-action-learning loop}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{Formalism - procedure of MDP}
+  In MDP, the procedure could be simplified as:
+  \begin{itemize}
+    \item we starts in a state $s_0$
+    \item we get to choose some action $a_0\in A$ to take in the MDP
+    \item once the action is executed, the state randomly transitions to some state $s_1\sim P_{s_0 a_0}$
+    \item we receive the reward $R(s_0)$ or $R(s_0, a_0)$
+    \item $\cdots \cdots$
+  \end{itemize}
+
+  $$s_0 \overset{a_0}{\longrightarrow} s_1 \overset{a_1}{\longrightarrow} s_2 \overset{a_2}{\longrightarrow} s_3 \overset{a_3}{\longrightarrow} \dots$$
+
+  Our total payoff is given by $$R(s_0) + \gamma R(s_1) + \gamma^2 R(s_2) + \cdots$$. 
+
+\end{frame}
+
+\begin{frame}{Formalism - solution to MDP}
+  In MDP, the procedure could be simplified as: $$s_0 \overset{a_0}{\longrightarrow} s_1 \overset{a_1}{\longrightarrow} s_2 \overset{a_2}{\longrightarrow} s_3 \overset{a_3}{\longrightarrow} \dots$$
+
+  Our goal in RL is to \textbf{choose actions} over time so as to \alert{maximize the expected value} of the total payoff: $$R(s_0) + \gamma R(s_1) + \gamma^2 R(s_2) + \cdots$$
+
+  It is to say that we should find a \textbf{policy function} $\pi : S\mapsto A$ mapping from the states to the optimal actions. Under policy $\pi$, the total payoff we get is the \textbf{value function} as given by $$V^{\pi}(s)=E\bigl[R(s_0) + \gamma R(s_1) + \gamma^2 R(s_2) + \cdots|s_0=s, \pi\bigr]$$
+
+\end{frame}
+
+\begin{frame}{Formalism - solution to MDP}
+  With the definition of the \textbf{value function} $$V^{\pi}(s)=E\bigl[R(s_0) + \gamma R(s_1) + \gamma^2 R(s_2) + \cdots|s_0=s, \pi\bigr]$$ and a fixed \textbf{policy} function $\pi$. We can know that the value function $V^{\pi}(s)$ satisfies the \textbf{Bellman equations}: $$V^{\pi}(s)=R(s) + \gamma\sum_{s^{'}\in S}P_{s\pi(s)}(s^{'})V^{\pi}(s^{'})$$
+
+  which is also called as \alert{Dynamic Programming}. Bellman's equations can be used to efficiently solve for $V^{\pi}$. (i.e. a set of $|S|$ linear equations in $|S|$ variables)
+
+  But the solution we want is the optimal value function $V^{*}(s)$.
+\end{frame}
+
+\begin{frame}{Formalism - solution to MDP}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\linewidth]{fig/RL-optimal-v.png}
+  \end{figure}
+\end{frame}
+
+\section{Algorithms}
+
+\begin{frame}[fragile]{Algorithms - overview}
+  How can we find the optimal policy so as to maximize the expected total payoff?
+
+  Here we describe two efficient algorithms for solving \textbf{finite-state MDPs}:
+  \begin{itemize}
+    \item value iteration
+    \item policy iteration
+  \end{itemize}
+  
+  The two methods are heuristic and solved by iterations.
+\end{frame}
+
+\begin{frame}[fragile]{Algorithms - value iteration}
+  In this case, the algorithm can be viewed as implementing a `'Bellman backup operator`' that takes a current estimate of the value function, and maps it to a new estimate.
+
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\linewidth]{fig/RL-value.png}
+    \caption{Algorithm - value iteration}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Algorithms - policy iteration}
+  \textbf{NOTE}: step (a) can be done via solving Bellman's equations as described earlier, which in the case of a fixed policy, is just a set of $|S|$ linear equations in $|S|$ variables.
+
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\linewidth]{fig/RL-policy.png}
+    \caption{Algorithm - policy iteration}
+  \end{figure}
+\end{frame}
+
+\section{Extension}
+
+\begin{frame}{Extension}
+  As we can see, MDP is a simple and ideal model. Even the transition probabilities $P_{sa}$ is known!
+
+  Assuming that we don't know $P_{sa}$, and all we have is \textbf{just the reward signal} (actually, it's the situation), \alert{how can we learn a agent/model from experiences via Reinforcement Learning?}
+
+  The \textbf{Inverted Pendulum} problem may be the best practice! See \href{https://github.com/zyxue/stanford-cs229/tree/master/Problem-set-4/6-reinforcement-learning-the-inverted-pendulum}{\textit{here}} for more details.
+\end{frame}
+
+\begin{frame}{Extension}
+  Next presentation, we will dive into \textbf{Flappy Bird} and reveal the principle \textbf{Q-learning} (a common method in RL) behind it!
+
+  Please be sure that you have known the solution of the problem \textbf{Inverted Pendulum}!
+\end{frame}
+
+\begin{frame}[standout]
+  Questions?
+\end{frame}
+
+\begin{frame}{References}
+  References:
+  \begin{itemize}
+    \item \href{http://cs229.stanford.edu/syllabus.html}{Stanford CS229 - Reinforcement Learning}
+    \item \href{https://www.cnblogs.com/yifdu25/p/8169226.html}{cnblogs - An introduction to Reinforcement Learning}
+    \item \href{https://arxiv.org/abs/1708.05866}{A Brief Survey of Deep Reinforcement Learning}
+  \end{itemize}
+\end{frame}
+
+\end{document}
