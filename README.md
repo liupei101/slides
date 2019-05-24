@@ -1,5 +1,5 @@
 # Slides
-Collections of my slides:
+Collection of my slides:
 
 - 2019
   - week3: [Metropolis - A modern beamer theme](./2019/week3/slides/week3.pdf) (just for fun)
