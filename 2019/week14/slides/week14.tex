@@ -7,9 +7,6 @@
 \usepackage[scale=2]{ccicons}
 \usepackage{graphicx}
 \usepackage{hyperref}
-\usepackage{algorithm}  
-\usepackage{algpseudocode}  
-\usepackage{amsmath}
 \usepackage{pgfplots}
 \usepgfplotslibrary{dateplot}
 
@@ -71,17 +68,17 @@
   Now, this slide will discuss a RL solution to \textit{Flappy Bird}. And we will focus on Q-Learning algorithm. 
   \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.35\linewidth]{fig/RL-flippy-bird.png}
-    \caption{RL based Flippy Bird}
+    \includegraphics[width=0.35\linewidth]{fig/RL-flappy-bird.png}
+    \caption{RL based Flappy Bird}
   \end{figure}
 \end{frame}
 
-\section{Flippy Bird}
+\section{Flappy Bird}
 
 \begin{frame}[fragile]{Description}
   Only with the current status and reward function, we need to develop an algorithm to let the bird learn to fly.
 
-  As talked in MDP, the agent (i.e. clear bird) need to take action w.r.t current status. After receiving the payoff, the agent would update its policy so as to take more optimal action if it is in the same situation.
+  As talked in MDP, the agent (i.e. clear bird) need to take action w.r.t. current status. After receiving the payoff, the agent would update its policy so as to take a more optimal action if it is in the same situation.
 
   Some essential concepts:
   \begin{itemize}
@@ -94,7 +91,7 @@
 \end{frame}
 
 \begin{frame}[fragile]{Q function}
-  Q function (action-utility function) records the payoff of taking an action w.r.t a status. 
+  Q function (action-utility function) records the payoff of taking an action w.r.t. a status. 
   \begin{table}  
     \caption{Q function stored in the agent}
     \begin{tabular*}{5cm}{lll}  
@@ -122,6 +119,17 @@
   \end{figure}
 \end{frame}
 
+\section{Extension}
+
+\begin{frame}{Extension - reinforcement learning}
+  You can get acquainted with follows if you have some interests in it. All of follows would give you more insights into \textsc{Reinforcement Learning}.
+  \begin{itemize}
+    \item SARSA - \textit{off-policy} learning algo. (Q-Learning - \textit{on-policy} learning)
+    \item sampling techniques (full backups and sample backups)
+    \item more policy search methods
+  \end{itemize}
+\end{frame}
+
 \begin{frame}[standout]
   Questions?
 \end{frame}
@@ -129,8 +137,9 @@
 \begin{frame}{References}
   References:
   \begin{itemize}
-    \item \href{https://www.cnblogs.com/yifdu25/p/8169226.html}{cnblogs - An introduction to Reinforcement Learning}
-    \item \href{https://github.com/yenchenlin/DeepLearningFlappyBird}{DRL of FlappyBird on Github}
+    \item \href{https://www.cnblogs.com/yifdu25/p/8169226.html}{Cnblogs - An Introduction to Reinforcement Learning}
+    \item \href{https://github.com/yenchenlin/DeepLearningFlappyBird}{A Python Implementation of FlappyBird on Github}
+    \item \href{https://arxiv.org/abs/1708.05866}{A Brief Survey of Deep Reinforcement Learning}
   \end{itemize}
 \end{frame}
 
