@@ -1,0 +1,137 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{algorithm}  
+\usepackage{algpseudocode}  
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+\title{An Introduction to Reinforcement Learning}
+\subtitle{Q-Learning}
+\date{\today}
+\author{Pei Liu}
+\institute{Department of Computer Science @UESTC}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Review of basics}
+
+\begin{frame}{Review - MDP}
+  In MDP, the procedure could be simplified as:
+  \begin{itemize}
+    \item we starts in a state $s_0$
+    \item we get to choose some action $a_0\in A$ to take in the MDP
+    \item once the action is executed, the state randomly transitions to some state $s_1\sim P_{s_0 a_0}$
+    \item we receive the reward $R(s_0)$ or $R(s_0, a_0)$
+    \item $\cdots \cdots$
+  \end{itemize}
+
+  $$s_0 \overset{a_0}{\longrightarrow} s_1 \overset{a_1}{\longrightarrow} s_2 \overset{a_2}{\longrightarrow} s_3 \overset{a_3}{\longrightarrow} \dots$$
+
+  Our total payoff is given by $$R(s_0) + \gamma R(s_1) + \gamma^2 R(s_2) + \cdots$$. 
+
+\end{frame}
+
+\begin{frame}{Review - MDP}
+  In MDP, the procedure could be simplified as: $$s_0 \overset{a_0}{\longrightarrow} s_1 \overset{a_1}{\longrightarrow} s_2 \overset{a_2}{\longrightarrow} s_3 \overset{a_3}{\longrightarrow} \dots$$
+
+  Our goal in RL is to \textbf{choose actions} over time so as to \alert{maximize the expected value} of the total payoff: $$R(s_0) + \gamma R(s_1) + \gamma^2 R(s_2) + \cdots$$
+
+  It is to say that we should find a \textbf{policy function} $\pi : S\mapsto A$ mapping from the states to the optimal actions. Under policy $\pi$, the total payoff we get is the \textbf{value function} as given by $$V^{\pi}(s)=E\bigl[R(s_0) + \gamma R(s_1) + \gamma^2 R(s_2) + \cdots|s_0=s, \pi\bigr]$$
+
+\end{frame}
+
+\begin{frame}{Review - MDP}
+  With the definition of the \textbf{value function} $$V^{\pi}(s)=E\bigl[R(s_0) + \gamma R(s_1) + \gamma^2 R(s_2) + \cdots|s_0=s, \pi\bigr]$$ and a fixed \textbf{policy} function $\pi$. We can know that the value function $V^{\pi}(s)$ satisfies the \textbf{Bellman equations}: $$V^{\pi}(s)=R(s) + \gamma\sum_{s^{'}\in S}P_{s\pi(s)}(s^{'})V^{\pi}(s^{'})$$
+
+  which is also called as \alert{Dynamic Programming}. Bellman's equations can be used to efficiently solve for $V^{\pi}$. (i.e. a set of $|S|$ linear equations in $|S|$ variables)
+
+  But the solution we want is the optimal value function $V^{*}(s)$.
+\end{frame}
+
+\begin{frame}[fragile]{Example - Flappy Bird}
+  Now, this slide will discuss a RL solution to \textit{Flappy Bird}. And we will focus on Q-Learning algorithm. 
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.35\linewidth]{fig/RL-flippy-bird.png}
+    \caption{RL based Flippy Bird}
+  \end{figure}
+\end{frame}
+
+\section{Flippy Bird}
+
+\begin{frame}[fragile]{Description}
+  Only with the current status and reward function, we need to develop an algorithm to let the bird learn to fly.
+
+  As talked in MDP, the agent (i.e. clear bird) need to take action w.r.t current status. After receiving the payoff, the agent would update its policy so as to take more optimal action if it is in the same situation.
+
+  Some essential concepts:
+  \begin{itemize}
+    \item status: processed data (distance) or raw data (image)
+    \item actions: click and do-nothing (1 and 2)
+    \item reward: alive = 1, death = -1000, success = 50
+  \end{itemize}
+
+  Here we talk about a simplifed status - Horizontal and Vertical distance ($d_x$ and $d_y$).
+\end{frame}
+
+\begin{frame}[fragile]{Q function}
+  Q function (action-utility function) records the payoff of taking an action w.r.t a status. 
+  \begin{table}  
+    \caption{Q function stored in the agent}
+    \begin{tabular*}{5cm}{lll}  
+    \hline  
+    Status & Fly  & Not Fly \\  
+    \hline  
+    ($d_{x_1}$, $d_{y_1}$)  & 1 & 3 \\  
+    ($d_{x_1}$, $d_{y_2}$)  & 3 & 4 \\  
+    ... & ... & ... \\
+    ($d_{x_m}$, $d_{y_{n-1}}$)  & 2 & 1 \\  
+    ($d_{x_m}$, $d_{y_n}$)  & -100 & 1 \\  
+    \hline
+    \end{tabular*}
+  \end{table}
+
+  The bird will take an action using the information above. We can take \alert{Q function} as the brain of bird (or agent).
+\end{frame}
+
+\begin{frame}{Algorithm}
+  Q-Learning in Flappy Bird:
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\linewidth]{fig/RL-Q-learning.png}
+    \caption{Q Learning}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[standout]
+  Questions?
+\end{frame}
+
+\begin{frame}{References}
+  References:
+  \begin{itemize}
+    \item \href{https://www.cnblogs.com/yifdu25/p/8169226.html}{cnblogs - An introduction to Reinforcement Learning}
+    \item \href{https://github.com/yenchenlin/DeepLearningFlappyBird}{DRL of FlappyBird on Github}
+  \end{itemize}
+\end{frame}
+
+\end{document}
