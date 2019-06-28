@@ -1,0 +1,140 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+\title{An Introduction to Singular Value Decomposition}
+\subtitle{Principle and Applications}
+\date{\today}
+\author{Pei Liu}
+\institute{Department of Computer Science @UESTC}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Review of basics}
+
+\begin{frame}{Review - Eigenvalues}
+  If $A$ is a symmetric real $n\times n$ matrix, $x$ is a $n$-dimensional vector, $\lambda$ is a real number, and $$Ax=\lambda x$$, then we have:
+  \begin{itemize}
+    \item $x$ is one of eigenvectors of matrix $A$
+    \item $\lambda$ is one of eigenvalues of matrix $A$
+  \end{itemize}
+
+  The eigenvectors and eigenvalues are used in \alert{Matrix Decomposition}, which can be expressed as follows: $$A=W\Sigma W^{-1}$$
+  where $W$ and $\Sigma$ consist of eigenvectors and eigenvalues.
+\end{frame}
+
+\begin{frame}{Review - Eigenvalues}
+  How can we utilize the eigenvalues and eigenvectors?
+
+  It's fundamental of many theory. Include but not limit to:
+  \begin{itemize}
+    \item Matrix diagonalize
+    \item PCA dimension reduction
+    \item Solution to Markov process
+  \end{itemize}
+
+  Here we dive into its function in \textbf{SVD (Singular Value Decomposition)}.
+\end{frame}
+
+\section{Singular Value Decomposition}
+
+\begin{frame}{SVD - Definition}
+  If $A$ is $m \times n$ matrix, the SVD of matrix $A$ is:
+  $$A=U\Sigma V^{T}$$
+  where $U^{T}U=I, V^{T}V=I$.
+
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/SVD-p1.png}
+    \caption{Definition of SVD}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{SVD - Solution}
+  How to obtain the value of $U, V, \Sigma$ ?
+
+  With the help of eigenvalues and eigenvectors, it is easy for us to construct matrixs $A^{T}A$ and $AA^{T}$ to get the solution.
+\end{frame}
+
+\section{Examples}
+
+\begin{frame}[fragile]{Examples of SVD}
+  If $$\mathbf{A} = \left( \begin{array}{ccc} 0& 1\\  1& 1\\   1& 0 \end{array} \right)$$
+  We can construct matrixs $A^{T}A$ and $AA^{T}$ by $$\mathbf{A^TA} = \left( \begin{array}{ccc} 0& 1 &1\\ 1&1& 0 \end{array} \right) \left( \begin{array}{ccc} 0& 1\\  1& 1\\   1& 0 \end{array} \right) = \left( \begin{array}{ccc} 2& 1 \\ 1& 2 \end{array} \right)$$
+  and $$\mathbf{AA^T} =  \left( \begin{array}{ccc} 0& 1\\  1& 1\\   1& 0 \end{array} \right) \left( \begin{array}{ccc} 0& 1 &1\\ 1&1& 0 \end{array} \right) = \left( \begin{array}{ccc} 1& 1 & 0\\ 1& 2 & 1\\ 0& 1& 1 \end{array} \right)$$
+  then we find the eigenvectors and eigenvalues of $\mathbf{A^TA}$:
+  $$\lambda_1= 3; v_1 = \left( \begin{array}{ccc} 1/\sqrt{2} \\ 1/\sqrt{2} \end{array} \right); \lambda_2= 1; v_2 = \left( \begin{array}{ccc} -1/\sqrt{2} \\ 1/\sqrt{2} \end{array} \right)$$
+\end{frame}
+
+\begin{frame}[fragile]{Examples of SVD}
+  the eigenvectors and eigenvalues of $\mathbf{AA^T}$:
+  $$\lambda_1= 3; u_1 = \left( \begin{array}{ccc} 1/\sqrt{6} \\ 2/\sqrt{6} \\ 1/\sqrt{6} \end{array} \right); \lambda_2= 1; u_2 = \left( \begin{array}{ccc} 1/\sqrt{2} \\ 0 \\ -1/\sqrt{2} \end{array} \right);  \lambda_3= 0; u_3 = \left( \begin{array}{ccc} 1/\sqrt{3} \\ -1/\sqrt{3} \\ 1/\sqrt{3} \end{array} \right)$$
+  
+  Then we can find the singular values using the equation $\sigma_i = \sqrt{\lambda_i}$, so the singular values are expressed by: $$\sigma_1 = \sqrt{3}, \sigma_2=1$$
+
+  As a result, \textbf{Singular Value Decomposition} of matrix $A$ can be summarized as:
+  $$A=U\Sigma V^T = \left( \begin{array}{ccc} 1/\sqrt{6} & 1/\sqrt{2} & 1/\sqrt{3} \\ 2/\sqrt{6} & 0 & -1/\sqrt{3}\\ 1/\sqrt{6} & -1/\sqrt{2} & 1/\sqrt{3} \end{array} \right) \left( \begin{array}{ccc} \sqrt{3} & 0 \\  0 & 1\\ 0 & 0 \end{array} \right) \left( \begin{array}{ccc} 1/\sqrt{2}  & 1/\sqrt{2}  \\ -1/\sqrt{2}  & 1/\sqrt{2}  \end{array} \right)$$
+\end{frame}
+
+\section{Applications}
+
+\begin{frame}{Applications - Important feature extraction}
+  We first to arrange the singular values in descending order, then extract the top-$k$ the singular values:
+  $$A_{m \times n} = U_{m \times m}\Sigma_{m \times n} V^T_{n \times n} \approx U_{m \times k}\Sigma_{k \times k} V^T_{k \times n}$$
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/SVD-p2.png}
+    \caption{Applications of SVD}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Applications - Important feature extraction}
+  One of application scenario is:
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.45\linewidth]{fig/SVD-p3.png}
+    \caption{Important feature extraction by SVD}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Applications - More}
+  \begin{itemize}
+    \item Data compression
+    \item Noise reduction (or feature extraction)
+    \item PCA dimension reduction
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[standout]
+  Questions?
+\end{frame}
+
+\begin{frame}{References}
+  References:
+  \begin{itemize}
+    \item \href{http://blog.codinglabs.org/articles/pca-tutorial.html}{PCA - Tutorial}
+    \item \href{http://www.ams.org/publicoutreach/feature-column/fcarc-svd}{We Recommend a Singular Value Decomposition}
+    \item \href{https://www.cnblogs.com/pinard/p/6251584.html}{Cnblog - tutorial of SVD}
+  \end{itemize}
+\end{frame}
+
+\end{document}
