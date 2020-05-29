@@ -18,7 +18,7 @@
 
 \title{基于梯度提升树的生存分析优化方法研究及应用}
 \subtitle{硕士学位论文答辩}
-\date{答辩日期：2020年5月18日}
+\date{答辩日期：2020年6月1日}
 \author{答辩人：刘沛（201721060103）}
 \institute{电子科技大学计算机科学与工程学院}
 \titlegraphic{\hfill\includegraphics[height=1.5cm]{fig/logo.pdf}}
@@ -29,18 +29,19 @@
 
 \begin{frame}{论文的主要工作成果}
   \begin{itemize}
+  	\item \textit{第一作者} | JCR\textit{二区} | \textit{已录用}. Optimizing survival analysis of xgboost for ties to predict disease progression of breast cancer[J]. \textbf{IEEE Transactions on Biomedical Engineering}, 2020, ():1-1.
     \item \textit{第一作者} | JCR\textit{二区} | \textit{已发表}. Hitboost: Survival analysis via a multi­output gradient boosting decision tree method[J].\textbf{IEEE Access}, 2019, 7(): 56785­-56795.
-    \item \textit{第一作者} | JCR\textit{二区} | \textit{已录用}. Optimizing survival analysis of xgboost for ties to predict disease progression of breast cancer[J]. \textbf{IEEE Transactions on Biomedical Engineering}, 2020, ():1-1.
-    \item \textit{第二作者} | JCR\textit{二区} | \textit{已发表}. Predicting invasive disease­free survival for early stage breast cancer patients using follow­up clinical data[J]. \textbf{IEEE Transactions on Biomedical Engineering}, 2019, 66(7): 2053­-2064.
+    \item \textit{第二作者} | JCR\textit{二区} | \textit{已发表}. Predicting invasive disease­ free survival for early stage breast cancer patients using follow­up clinical data[J]. \textbf{IEEE Transactions on Biomedical Engineering}, 2019, 66(7): 2053­-2064.
+    \item 第一作者 | CCF-B | 已投稿. Improving Prediction of Proportional Hazards Using Gradient Boosting Trees for Censored Data[C]. Performance 2020.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{论文的主要工作成果}
   其他成果：
   \begin{itemize}
-    \item \textit{**,刘沛,**,**,**. 一种基于乳腺癌临床高维数据的分层重要特征选择方法[P].中国,发明专利,CN201810552686.3,2018年5月31日（申请专利）}
-    \item \textit{**,刘沛,**,***,**. 一种基于Efron近似优化的生存风险建模方法[P].中国,发明专利,CN201910315815.1,2019年4月19日（申请专利）}
-    \item \textit{**,刘沛,**,**,**,***. 一种用于生存风险分析的多输出梯度提升树建模方法[P].中国,发明专利,CN201910315829.3,2019年4月19日（申请专利）}
+    \item \textit{一种基于乳腺癌临床高维数据的分层重要特征选择方法[P].中国,发明专利,CN201810552686.3,2018年5月31日（申请专利）}
+    \item \textit{一种基于Efron近似优化的生存风险建模方法[P].中国,发明专利,CN201910315815.1,2019年4月19日（申请专利）}
+    \item \textit{一种用于生存风险分析的多输出梯度提升树建模方法[P].中国,发明专利,CN201910315829.3,2019年4月19日（申请专利）}
   \end{itemize}
 \end{frame}
 
@@ -58,11 +59,11 @@
     \item \textbf{应用领域}：\textit{医疗健康、金融等}
   \end{itemize}
 
-  在临床疾病预后研究中，生存分析方法用来
+  临床疾病预后研究中，生存分析方法用于
   \begin{itemize}
     \item \textit{分析患者随访数据}
     \item \textit{建立生存预后模型}
-    \item \textit{辅助诊疗}
+    \item \textit{辅助医生诊疗}
     \item \textit{发现疾病重要影响因子}
   \end{itemize}
 \end{frame}
@@ -105,7 +106,7 @@
 
   \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\linewidth]{fig/pic004.pdf}
+    \includegraphics[width=0.8\linewidth]{fig/pic004.pdf}
     \caption{常见的生存分析方法}
   \end{figure}
 \end{frame}
@@ -113,7 +114,7 @@
 \section{论文的主要工作及贡献}
 
 \begin{frame}{主要工作及贡献}
-  论文的主要工作及贡献
+  论文主要工作及贡献
   \begin{itemize}
     \item \textit{HitBoost生存分析方法}
     \item \textit{BecCox生存分析方法}
@@ -122,16 +123,16 @@
 \end{frame}
 
 \begin{frame}{第一部分：HitBoost生存分析方法}
-  本节内容参见文献：\textit{Pei Liu, **, **. Hitboost: Survival analysis via a multi­ output gradient boosting decision tree method[J]. IEEE Access, 2019, 7: 56785-­56795}。
+  参见文献：\textit{Pei Liu, **, **. Hitboost: Survival analysis via a multi­ output gradient boosting decision tree method[J]. IEEE Access, 2019, 7: 56785-­56795}。
 
-  针对现有生存分析方法依赖先验假设或解释性不足的问题，本文在传统的FHT模型的基础上研究并提出了一种基于梯度提升树的生存分析方法：HitBoost。
+  针对现有方法依赖先验假设或解释性不足的问题，本文基于传统的FHT模型，研究并提出了一种基于梯度提升树的生存分析方法：HitBoost。
   
-  HitBoost方法的贡献和创新
+  贡献与创新：
   \begin{itemize}
-    \item \textit{使用多输出的梯度提升树建模，提高了模型的表达能力}
-    \item \textit{引入生存分析中极大似然估计函数和凸函数近似的一致性指数作为联合目标函数，提高了预测性能}
-    \item \textit{不再遵循任何先验假设，提升了算法的应用场景}
-    \item \textit{仍然具有一定的解释性，保证了模型的实用性}
+    \item \textit{使用多输出的梯度提升树建模，提高了模型的表达能力；}
+    \item \textit{引入生存分析中极大似然估计函数和凸函数近似的一致性指数作为联合目标函数，提高了预测性能；}
+    \item \textit{不再遵循任何先验假设，提升了算法的应用场景；}
+    \item \textit{仍然具有一定的解释性，保证了模型的实用性。}
   \end{itemize}
   
 \end{frame}
@@ -161,8 +162,8 @@
 
   HitBoost方法实现的主要步骤
   \begin{itemize}
-    \item \textit{推导目标函数关于$\hat{y}$的一阶和二阶梯度，见定理3.1-3.4及证明}
-    \item \textit{借助XGBoost梯度提升树框架现实了HitBoost方法}
+    \item \textit{推导目标函数关于$\hat{y}$的一阶和二阶梯度，见定理3.1-3.4}
+    \item \textit{借助XGBoost梯度提升树框架现实HitBoost方法}
   \end{itemize}
 \end{frame}
 
@@ -177,7 +178,8 @@
 \end{frame}
 
 \begin{frame}{第一部分：HitBoost生存分析方法}
-  HitBoost模型使用的超参数通过贝叶斯超参数优化方法得到，详见论文3.4.1节实验设置。
+  超参数使用贝叶斯超参数优化方法得到，详见论文3.4.1节实验设置。
+
 
   \textbf{实验结果}（一致性指数）
   \begin{figure}[H]
@@ -189,7 +191,7 @@
 \end{frame}
 
 \begin{frame}{第一部分：HitBoost生存分析方法}
-  \textbf{样例分析}：模型对个体生存曲线预测示例
+  \textbf{样例分析}：模型对个体生存曲线预测
   \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{fig/pic04.png}
@@ -199,13 +201,15 @@
 \end{frame}
 
 \begin{frame}{第二部分：BecCox生存分析方法}
-  考虑到Cox流派生存分析方法存在的不足，如偏似然估计函数不够精确以及模型容易过拟合，本文在传统Cox 比例风险模型基础上研究并提出了基于梯度提升树的优化方法：BecCox。
+  已投稿会议Performance 2020 (CCF-B)：\textit{Improving Prediction of Proportional Hazards Using Gradient Boosting Trees for Censored Data.}
 
-  BecCox方法的贡献和创新
+  针对Cox流派方法存在的不足，如偏似然估计函数不够精确以及模型容易过拟合，本文基于传统Cox 比例风险模型，研究并提出了基于梯度提升树的优化方法：BecCox。
+
+  贡献与创新：
   \begin{itemize}
-    \item \textit{遵循比例风险假设，预测事件发生的风险比例，可广泛应用于传统Cox生存分析场景}
-    \item \textit{在目标函数上，使用更加精确的偏似然估计函数，联合调整风险排序的一致性指数，缩小了目标函数给模型预测带来的偏差}
-    \item \textit{在Cox流派的方法中，相比经典的Cox比例风险系列模型，该方法有着更好的风险预测性能}
+    \item \textit{遵循比例风险假设，预测事件发生的风险比例，可广泛应用于传统Cox生存分析场景；}
+    \item \textit{在目标函数上，使用更加精确的偏似然估计函数，联合调整风险排序的一致性指数，缩小了目标函数给模型预测带来的偏差；}
+    \item \textit{在Cox流派的方法中，相比经典的Cox比例风险系列模型，该方法有着更好的风险预测性能。}
   \end{itemize}
   
 \end{frame}
@@ -228,13 +232,14 @@
 
   BecCox方法实现的主要步骤
   \begin{itemize}
-    \item \textit{推导目标函数关于$\hat{y}$的一阶和二阶梯度，见定理4.3-4.6及证明}
+    \item \textit{推导目标函数关于$\hat{y}$的一阶和二阶梯度，见定理4.3-4.6}
     \item \textit{借助XGBoost梯度提升树框架现实了BecCox方法}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{第二部分：BecCox生存分析方法}
-  BecCox模型使用的超参数通过贝叶斯超参数优化方法得到，见本文4.3.1节实验设置。
+  超参数通过贝叶斯超参数优化方法得到，见本文4.3.1节实验设置。
+
 
   实验结果（一致性指数）
   \begin{figure}[H]
@@ -243,7 +248,7 @@
     \caption{BecCox模型性能对比}
   \end{figure}
 
-  从理论上来看，当数据中出现的Ties越多时，BecCox方法对目标函数的近似越精确，对风险比例的估计偏差越小。
+  理论上，数据中Ties越多，BecCox对目标函数近似越精确，预测偏差越小。
 \end{frame}
 
 \begin{frame}{第三部分：乳腺癌复发预后模型}
@@ -257,7 +262,7 @@
 \end{frame}
 
 \begin{frame}{第三部分：乳腺癌复发预后模型}
-  \textbf{模型性能}：使用HitBoost方法建立的乳腺癌复发预后模型在WCH测试集上的表现为 0.72323，而CoxPH、CoxBoost、ThresReg、RSF、BecCox方法在同一测试集上的表现分别为 0.69354、0.68752、0.66792、0.70517、0.71029。
+  \textbf{模型性能}：HitBoost方法建立的乳腺癌复发预后模型一致性指数为 0.72323（CoxPH、CoxBoost、ThresReg、RSF、BecCox方法一致性指数分别为 0.69354、0.68752、0.66792、0.70517、0.71029）。
 
   \begin{figure}[H]
     \centering
