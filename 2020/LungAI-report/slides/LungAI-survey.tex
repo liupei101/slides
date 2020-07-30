@@ -1,0 +1,414 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+\usepackage{xeCJK}
+\setmainfont{Times New Roman}
+\setCJKmainfont[BoldFont = STZhongsong, ItalicFont = STKaiti]{STSong}
+
+\title{肺癌的人工智能研究}
+\subtitle{CT图像应用}
+\date{汇报日期：2020年8月1日}
+\author{汇报人：刘沛}
+\institute{四川大学华西医院}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{目录}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{背景与意义}
+
+\begin{frame}{肺癌相关背景}
+  肺癌 (Lung Cancer)
+  \begin{itemize}
+    \item \textit{威胁最大的恶性肿瘤之一}
+    \item \textit{发病率和死亡率很高，增长速度最快}
+  \end{itemize}
+
+  降低肺癌死亡率：低剂量CT早期筛查\\
+  \vbox{}
+  \begin{quote}
+    National Lung Screening Trial Research Team. Reduced Lung-Cancer Mortality with Low-Dose Computed Tomographic Screening. N. Engl. J. Med. 2011, 365, 395–409.
+  \end{quote}
+  
+\end{frame}
+
+\begin{frame}{计算辅助诊断}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{fig/S1-1.pdf}
+    \caption{计算机辅助诊断}
+  \end{figure}
+\end{frame}
+
+\section{实际应用}
+
+\begin{frame}{实际应用介绍}
+  基于CT图像的人工智能应用：
+  \begin{itemize}
+    \item A1: \textit{肺结节识别}
+    \item A2: \textit{肺结节检测}
+    \item A3: \textit{肺部语义分割}
+    \item A4: \textit{肺癌风险预测}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{应用介绍步骤}
+  主要从以下方面介绍：
+  \begin{itemize}
+    \item \textit{目的是什么？}
+    \item \textit{如何达到目的？（流程简介）}
+    \item \textit{存在哪些难点？}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{A1: 肺结节识别}
+  识别肺结节属于哪一种已知的类别，如
+  \begin{itemize}
+    \item \textit{肺结节良恶性识别}
+    \item \textit{肺纹理特征识别}
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.95\linewidth]{fig/S2-2.png}   
+      \caption{肺结节良恶性}
+    \end{figure}
+    \column{0.5\textwidth}
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.95\linewidth]{fig/S2-1.png}
+      \caption{肺纹理特征}
+    \end{figure}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{A1: 肺结节识别}
+  肺结节识别模型：深度卷积神经网络模型 (DCNN)
+  \begin{itemize}
+    \item 输入：\textit{肺结节/肺部候选区域 (RoI, Region of Interst) CT图像 (2D/3D)}
+    \item 输出：\textit{RoI所属类别概率}
+  \end{itemize}
+  \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.95\linewidth]{fig/S2-3.png}
+      \caption{肺结节识别模型}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{A1: 肺结节识别}
+  计算机视觉\textbf{图像分类}任务
+  \vspace{5 mm}
+
+  任务流程：
+  \begin{itemize}
+    \item 数据收集及预处理：\textit{带有标签的RoI CT图像}
+    \item 模型训练：\textit{数据拟合，具备图像特征提取能力}
+    \item 模型测试与评估：\textit{ACC，AUC、F1等分类模型常用指标}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{A1: 肺结节识别}
+  计算机视觉\textbf{图像分类}任务
+  \vspace{5 mm}
+
+  难点：
+  \begin{itemize}
+    \item \textit{大型，高质量标注数据集}
+    \item \textit{正负样本比例不平衡}
+    \item \textit{模型本身表达能力不够}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{A2: 肺结节检测}
+  计算机视觉\textbf{目标检测}任务
+  \begin{itemize}
+    \item \textbf{定位}：\textit{自动定位肺结节所在区域}
+    \item \textbf{识别}：\textit{自动识别所属类别（如是/不是结节）}
+  \end{itemize}
+
+  \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.98\linewidth]{fig/S2-4.png}
+      \caption{肺结节检测模型}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{A2: 肺结节检测}
+  常用的检测框架，两个子任务：
+  \begin{itemize}
+    \item \textbf{候选区域检测}：\textit{从CT图像中检测所有可能的结节区域，即RoI}
+    \item \textbf{降低误报率}：\textit{识别RoI是否包含结节，即False Positive Reduction}
+  \end{itemize}
+
+  训练数据：带有肺结节\textbf{边界框标注}的CT图像
+
+  \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.98\linewidth]{fig/S2-4.png}
+      \caption{肺结节检测模型}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{A2: 肺结节检测}
+  其它的检测框架：
+  \begin{itemize}
+    \item \textit{One-Stage方法，同时完成检测和识别}
+    \item \textit{基于3D图像的神经网络模型}
+    \item \textit{不同的图片预处理或训练策略}
+    \item \textit{弱监督学习检测}
+  \end{itemize}
+
+  难点：
+  \begin{itemize}
+    \item \textit{数据标注和类别不平衡}
+    \item \textit{高质量的RoI}
+    \item \textit{False Positive Reduction}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{A3: 肺部语义分割}
+  计算机视觉\textbf{语义分割}任务：\textit{图像每个像素点所属类别}
+
+  肺部语义分割：从CT图像中分割出感兴趣的实例
+   
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.98\linewidth]{fig/S2-5.png}
+    \caption{肺实质分割模型 (2D/3D)}
+  \end{figure}
+
+  分割结果一般用于更加精细的下游任务，如肺结节检测等
+
+\end{frame}
+
+\begin{frame}{A3: 肺部语义分割}
+  计算机视觉\textbf{语义分割}任务：\textit{图像每个像素点所属类别}
+
+  肺部语义分割：从CT图像中分割出感兴趣的实例
+
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\linewidth]{fig/S2-6.png}
+    \caption{肺结节分割模型 (2D/3D)}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{A3: 肺部语义分割}
+  肺部语义分割方法：
+  \begin{itemize}
+    \item \textit{区域生长法}
+    \item \textit{基于阈值的多阶段方法}
+    \item \textit{3D Mask R-CNN实例分割网络}
+    \item \textit{其他半监督学习方法}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{A3: 肺部语义分割}
+  Mask R-CNN：像素到像素的Mask预测
+
+  训练数据：带有感兴趣实例\textbf{像素级别}标注的图像
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\linewidth]{fig/S2-7.png}
+    \caption{Mask R-CNN模型}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{A3: 肺部语义分割}
+  难点：
+  \begin{itemize}
+    \item \textit{大规模的肺部CT图像语义标注数据}
+    \item \textit{更加精细的3D图像分割结果}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{A4: 肺癌风险预测}
+  \begin{quote}
+    如何直接使用Chest CT扫描图像，预测患肺癌的风险？
+    \vspace{5 mm}
+
+    End-to-end lung cancer screening with three-dimensional deep learning on low-dose chest computed tomography, Nature Medicine, 2019.
+  \end{quote}
+\end{frame}
+
+\begin{frame}{A4: 肺癌风险预测}
+  CT图像上端到端的肺癌筛查深度学习模型
+
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\linewidth]{fig/S2-8.png}
+    \caption{Nature Medicine(2019): End-to-end lung cancer screening with three-dimensional deep learning on low-dose chest computed tomography.}
+  \end{figure}
+\end{frame}
+
+\section{核心方法}
+
+\begin{frame}{核心方法介绍}
+  CT图像分析关键方法 / 架构：
+  \begin{itemize}
+    \item N1: \textit{卷积神经网络}
+    \item N2: \textit{目标识别网络}
+    \item N3: \textit{目标检测网络}
+    \item N4: \textit{语义分割网络}
+    \item N5: \textit{多任务网络}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{方法介绍步骤}
+  主要从以下方面介绍：
+  \begin{itemize}
+    \item \textit{基本架构}
+    \item \textit{用途，特点，及优势}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{N1: 卷积神经网络基础}
+  卷积神经网络 (CNN, Convolutional Neural Network) 是如何“学习”的
+  \begin{itemize}
+    \item 正向传播：\textit{计算图像特征、预测结果、预测误差}
+    \item 反向传播：\textit{计算误差梯度，更新网络参数}
+  \end{itemize}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/S3-1.png}
+    \caption{经典的卷积神经网络：VGGNet (2014)}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{N1: 卷积神经网络基础}
+  卷积神经网络 (CNN, Convolutional Neural Network) 学习到了什么？
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/S3-2.png}
+    \caption{卷积神经网络可视化}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{N1: 目标识别网络}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{fig/S3-3.png}
+    \caption{经典的图像分类网络：ResNet (ILSVRC-2015 Rank \#1)}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{N1: 目标识别网络}
+  肺结节识别应用中，常用的CNN模型有
+  \begin{itemize}
+    \item \textit{ResNet, DenseNet, SENet}
+    \item \textit{Inception}
+  \end{itemize}
+
+  特点及优势：
+  \begin{itemize}
+    \item \textit{强大的表达能力}
+    \item \textit{适用于不同任务}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{N2: 目标检测网络}
+  Alibaba’s 2017 TianChi AI Competition for Healthcare Rank \#1
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{fig/S3-4.png}
+    \caption{候选框生成: 3D Faster R-CNN}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{fig/S3-5.png}
+    \caption{降低FP: 3D DCNN}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{N2: 目标检测网络}
+  CV领域经典的目标检测网络：
+  \begin{itemize}
+    \item \textit{Faster R-CNN}
+    \item \textit{FPN, RetinaNet}
+    \item \textit{YOLO}
+  \end{itemize}
+  \vspace{5 mm}
+  \begin{quote}
+    [1] MICCAI (2019). 3DFPN-HS2: 3D Feature Pyramid Network Based High Sensitivity and Specificity Pulmonary Nodule Detection. 
+
+    [2] In Proceedings of the Medical Imaging (2018). Using YOLO Based Deep Learning Network for Real Time Detection and Localization of Lung Nodules from Low Dose CT Scans.
+
+    [3] Nature Medicine (2019). End-to-end lung cancer screening with three-dimensional deep learning on low-dose chest computed tomography. 
+  \end{quote}
+\end{frame}
+
+\begin{frame}{N3: 语义分割网络}
+  语义分割网络 (Segmentation in a pixel-to-pixel manner)：
+  \begin{itemize}
+    \item \textit{U-Net, U-Net++}
+    \item \textit{Mask R-CNN}
+    \item \textit{DeepLab}
+  \end{itemize}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/S3-6.png}
+    \caption{U-Net for medical image segmentation}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{N4: 多任务网络}
+  多任务深度学习模型: \textit{Segmentation + Detection + Classification}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{fig/S3-7.png}
+    \caption{End-to-end cancer risk prediction model}
+  \end{figure}
+\end{frame}
+
+\section{发展方向}
+
+\begin{frame}{医学图像处理方法发展方向}
+  参考文献：近年发表在医学图像处理会议或期刊上的部分文章
+  \vspace{5 mm}
+
+  从\textbf{卷积神经网络模型}层面：
+  \begin{enumerate}[(1)]
+    \item 借鉴计算机视觉领域最新的模型架构，用于特定任务
+    \item 综合各个网络的优势及特点，设计用于特定任务的神经网络
+    \item 适用于3D图像的网络结构
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}{医学图像处理方法发展方向}
+  参考文献：近年发表在医学图像处理会议或期刊上的部分文章
+  \vspace{5 mm}
+
+  从\textbf{输入模型的数据}层面：
+  \begin{enumerate}[(1)]
+    \item 针对标注数据过少的问题，设计半监督学习或者自监督学习的方法训练模型
+    \item 针对数据正负样本不均衡的问题，设计新的目标函数减小少数样本的稀疏性
+  \end{enumerate}
+
+  \textbf{肺癌预后生存分析？}
+\end{frame}
+
+\begin{frame}[standout]
+  谢谢各位老师
+\end{frame}
+
+\end{document}
